@@ -1,3 +1,4 @@
-*.swp
+*.sw*
+*.txt
 bwtdecode
 bwtsearch
