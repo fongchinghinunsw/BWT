@@ -5,14 +5,12 @@
 #define MAX_SIZE 247920
 
 typedef struct c_table {
-  int count[5];
+  int count[4];
 } c_table;
 
 typedef struct rank {
-  // current # character.
-  int cur;
   // current # occurance of each character.
-  int count[5];
+  int count[4];
   // # time that character occurs so far.
   int match[MAX_SIZE];
 } rank;
@@ -33,12 +31,12 @@ int to_index(int c);
 
 void update_c_table(c_table *ct, int ch);
 
-void update_rank(rank *r, int ch);
+void update_rank(rank *r, int ch, int cur);
 
 void update_bs_rank(bs_rank *r, int ch);
 
 void print_c_table(c_table *ct);
 
-void print_rank(rank *r);
+void print_rank(rank *r, int cur);
 
 void print_bs_rank(bs_rank *r);

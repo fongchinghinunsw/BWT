@@ -2,6 +2,7 @@
 
 c_table *init_c_table() {
   c_table *new = calloc(1, sizeof(*new));
+  new->count[0] = new->count[1] = new->count[2] = new->count[3] = 1;
   return new;
 }
 
@@ -18,24 +19,22 @@ bs_rank *init_bs_rank() {
 int to_index(int c) {
   switch (c)
   {
-    case '\n': return 0;
-    case 'A': return 1;
-    case 'C': return 2;
-    case 'G': return 3;
-    case 'T': return 4;
+    case 'A': return 0;
+    case 'C': return 1;
+    case 'G': return 2;
+    case 'T': return 3;
   }
 }
 
 void update_c_table(c_table *ct, int ch) {
-  for (int i = to_index(ch) + 1; i < 5; i++) {
+  for (int i = to_index(ch) + 1; i < 4; i++) {
     ct->count[i]++;
   }
 }
 
-void update_rank(rank *r, int ch) {
-  r->match[r->cur] = r->count[to_index(ch)];
+void update_rank(rank *r, int ch, int cur) {
+  r->match[cur] = r->count[to_index(ch)];
   r->count[to_index(ch)]++;
-  r->cur++;
 }
 
 void update_bs_rank(bs_rank *r, int ch) {
@@ -51,20 +50,17 @@ void update_bs_rank(bs_rank *r, int ch) {
 }
 
 void print_c_table(c_table *ct) {
-  printf("\\n %d\n", ct->count[0]);
-  printf("A %d\n", ct->count[1]);
-  printf("C %d\n", ct->count[2]);
-  printf("G %d\n", ct->count[3]);
-  printf("T %d\n", ct->count[4]);
+  printf("A %d\n", ct->count[0]);
+  printf("C %d\n", ct->count[1]);
+  printf("G %d\n", ct->count[2]);
+  printf("T %d\n", ct->count[3]);
 }
 
-void print_rank(rank *r) {
-  /*
-  printf("Position Symbol #Matching\n");
-  for (int i = 0; i < r->cur; i++) {
-    printf("%8d%7c%10d\n", i, r->chars[i], r->match[i]);
+void print_rank(rank *r, int cur) {
+  printf("Position #Matching\n");
+  for (int i = 0; i < cur; i++) {
+    printf("%8d%10d\n", i, r->match[i]);
   }
-  */
 }
 
 void print_bs_rank(bs_rank *r) {
