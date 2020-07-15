@@ -19,9 +19,10 @@ int main(int argc, char **argv) {
   print_rank(r);
 
   for (int i = 0; i < r->cur+1; i++) {
-    buffer[i] = r->chars[next_pos];
+    fseek(in, next_pos, SEEK_SET);
+    buffer[i] = fgetc(in);
     //printf("%d %c %d %d...\n", next_pos, r->chars[next_pos], ct->count[to_index(r->chars[next_pos])], r->match[next_pos]);
-    next_pos = ct->count[to_index(r->chars[next_pos])] + r->match[next_pos];
+    next_pos = ct->count[to_index(buffer[i])] + r->match[next_pos];
   }
 
   for (int i = r->cur-1; 1; i--) {

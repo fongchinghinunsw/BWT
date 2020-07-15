@@ -33,7 +33,6 @@ void update_c_table(c_table *ct, int ch) {
 }
 
 void update_rank(rank *r, int ch) {
-  r->chars[r->cur] = ch;
   r->match[r->cur] = r->count[to_index(ch)];
   r->count[to_index(ch)]++;
   r->cur++;
@@ -61,10 +60,12 @@ void print_c_table(c_table *ct) {
 }
 
 void print_rank(rank *r) {
+  /*
   printf("Position Symbol #Matching\n");
   for (int i = 0; i < r->cur; i++) {
     printf("%8d%7c%10d\n", i, r->chars[i], r->match[i]);
   }
+  */
 }
 
 void print_bs_rank(bs_rank *r) {

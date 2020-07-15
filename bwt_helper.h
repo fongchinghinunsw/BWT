@@ -13,8 +13,6 @@ typedef struct rank {
   int cur;
   // current # occurance of each character.
   int count[5];
-  // save the whole text.
-  int chars[MAX_SIZE];
   // # time that character occurs so far.
   int match[MAX_SIZE];
 } rank;
