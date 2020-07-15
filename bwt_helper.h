@@ -5,7 +5,7 @@
 #define MAX_SIZE 247920
 
 typedef struct c_table {
-  int count[4];
+  int count[5];
 } c_table;
 
 typedef struct rank {
@@ -20,7 +20,6 @@ typedef struct rank {
 typedef struct bs_rank {
   int cur;
   int count[5];
-  int chars[MAX_SIZE];
   int match[5][MAX_SIZE];
 } bs_rank;
 

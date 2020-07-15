@@ -39,7 +39,6 @@ void update_rank(rank *r, int ch) {
 }
 
 void update_bs_rank(bs_rank *r, int ch) {
-  r->chars[r->cur] = ch;
   r->count[to_index(ch)]++;
   for (int i = 0; i < 5; i++) {
     if (to_index(ch) != i) {

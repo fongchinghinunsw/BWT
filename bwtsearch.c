@@ -15,11 +15,13 @@ int main(int argc, char **argv) {
     update_bs_rank(r, c);
   }
 
-  print_bs_rank(r);
+  //print_bs_rank(r);
 
   while (scanf("%s", search_term) != EOF) {
     search(in, search_term, ct, r);
   }
+
+  fclose(in);
 }
 
 void search(FILE *in, char *search_term, c_table *ct, bs_rank *r) {

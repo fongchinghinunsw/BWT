@@ -2,3 +2,5 @@
 *.txt
 bwtdecode
 bwtsearch
+my_output/
+memory.*
