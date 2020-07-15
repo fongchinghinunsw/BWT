@@ -10,9 +10,15 @@ int main(int argc, char **argv) {
   bs_rank *r = init_bs_rank();
 
   int c;
+  int cur = 0;
   while ((c = fgetc(in)) != EOF) {
+    if (c == '\n') {
+      cur++;
+      continue;
+    }
     update_c_table(ct, c);
-    update_bs_rank(r, c);
+    update_bs_rank(r, c, cur);
+    cur++;
   }
 
   //print_bs_rank(r);

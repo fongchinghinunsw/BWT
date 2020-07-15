@@ -37,16 +37,15 @@ void update_rank(rank *r, int ch, int cur) {
   r->count[to_index(ch)]++;
 }
 
-void update_bs_rank(bs_rank *r, int ch) {
+void update_bs_rank(bs_rank *r, int ch, int cur) {
   r->count[to_index(ch)]++;
-  for (int i = 0; i < 5; i++) {
+  for (int i = 0; i < 4; i++) {
     if (to_index(ch) != i) {
-      r->match[i][r->cur] = r->count[i];
+      r->match[i][cur] = r->count[i];
     } else {
-      r->match[i][r->cur] = r->count[to_index(ch)];
+      r->match[i][cur] = r->count[to_index(ch)];
     }
   }
-  r->cur++;
 }
 
 void print_c_table(c_table *ct) {
@@ -63,10 +62,10 @@ void print_rank(rank *r, int cur) {
   }
 }
 
-void print_bs_rank(bs_rank *r) {
-  printf("\\n A C G T\n");
-  for (int i = 0; i < r->cur; i++) {
-    for (int j = 0; j < 5; j++) {
+void print_bs_rank(bs_rank *r, int cur) {
+  printf("A C G T\n");
+  for (int i = 0; i < cur; i++) {
+    for (int j = 0; j < 4; j++) {
       printf("%d ", r->match[j][i]);
     }
     printf("\n");
