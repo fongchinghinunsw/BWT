@@ -1,14 +1,14 @@
 #include "bwt_helper.h"
 
-void search(FILE *in, char *search_term, c_table *ct, bs_rank *r);
-int getNumMatch(FILE *in, bs_rank *r, int c, int cur);
+void search(FILE *in, char *search_term, c_table *ct, rank *r);
+int getNumMatch(FILE *in, rank *r, int c, int cur);
 
 int main(int argc, char **argv) {
   FILE *in = fopen(argv[1], "r");
   char search_term[100];
 
   c_table *ct = init_c_table();
-  bs_rank *r = init_bs_rank();
+  rank *r = init_rank();
 
   int c;
   int cur = 0;
@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
     cur++;
   }
 
-  print_bs_rank(r, cur);
+  print_rank(r, cur);
 
   while (scanf("%s", search_term) != EOF) {
     search(in, search_term, ct, r);
@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
   fclose(in);
 }
 
-void search(FILE *in, char *search_term, c_table *ct, bs_rank *r) {
+void search(FILE *in, char *search_term, c_table *ct, rank *r) {
   int i = strlen(search_term) - 1; // last index of the pattern
   int c = search_term[i]; // start with last character of the pattern.
   int first = ct->count[to_index(c)];
@@ -58,7 +58,7 @@ void search(FILE *in, char *search_term, c_table *ct, bs_rank *r) {
   }
 }
 
-int getNumMatch(FILE *in, bs_rank *r, int c, int cur) {
+int getNumMatch(FILE *in, rank *r, int c, int cur) {
   int block_id = cur / BLOCK_SIZE;
   int offset = cur % BLOCK_SIZE;
 

@@ -11,11 +11,6 @@ rank *init_rank() {
   return new;
 }
 
-bs_rank *init_bs_rank() {
-  bs_rank *new = calloc(1, sizeof(*new));
-  return new;
-}
-
 int to_index(int c) {
   switch (c)
   {
@@ -45,7 +40,7 @@ void update_rank(rank *r, int ch, int cur) {
 /*
   store rank every BLOCK_SIZE characters.
 */
-void update_bs_rank(bs_rank *r, int ch, int cur) {
+void update_bs_rank(rank *r, int ch, int cur) {
   r->count[to_index(ch)]++;
   if (cur % BLOCK_SIZE == 0) {
     printf("%d\n", cur);
@@ -64,25 +59,6 @@ void print_c_table(c_table *ct) {
 }
 
 void print_rank(rank *r, int cur) {
-/*
-  printf("Position #Matching\n");
-  for (int i = 0; i < cur; i++) {
-    printf("%8d%10d\n", i, r->match[i]);
-  }
-*/
-  printf("index    A    C    G    T\n");
-  int index = cur / BLOCK_SIZE;
-  for (int i = 0; i < index; i++) {
-    printf("%5d", i);
-    for (int j = 0; j < 4; j++) {
-      printf("%5d", r->match[j][i]);
-    }
-    printf("\n");
-  }
-  printf("\nFinal count: %d %d %d %d\n\n", r->count[0], r->count[1], r->count[2], r->count[3]);
-}
-
-void print_bs_rank(bs_rank *r, int cur) {
   printf("index    A    C    G    T\n");
   int index = cur / BLOCK_SIZE;
   for (int i = 0; i < index; i++) {
