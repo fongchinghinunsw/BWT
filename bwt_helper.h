@@ -13,7 +13,8 @@ typedef struct rank {
   // current # occurance of each character.
   int count[4];
   // # time that character occurs so far.
-  int match[MAX_SIZE];
+  //int match[MAX_SIZE];
+  int match[4][MAX_SIZE];
 } rank;
 
 typedef struct bs_rank {
