@@ -3,6 +3,7 @@
 #include <string.h>
 
 #define MAX_SIZE 247920
+#define BLOCK_SIZE 5
 
 typedef struct c_table {
   int count[4];

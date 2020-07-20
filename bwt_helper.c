@@ -37,13 +37,16 @@ void update_rank(rank *r, int ch, int cur) {
   r->count[to_index(ch)]++;
 }
 
+/*
+  store rank every BLOCK_SIZE characters.
+*/
 void update_bs_rank(bs_rank *r, int ch, int cur) {
   r->count[to_index(ch)]++;
-  for (int i = 0; i < 4; i++) {
-    if (to_index(ch) != i) {
-      r->match[i][cur] = r->count[i];
-    } else {
-      r->match[i][cur] = r->count[to_index(ch)];
+  if (cur % BLOCK_SIZE == 0) {
+    printf("%d\n", cur);
+    int index = cur / BLOCK_SIZE;
+    for (int i = 0; i < 4; i++) {
+      r->match[i][index] = r->count[i];
     }
   }
 }
@@ -63,11 +66,14 @@ void print_rank(rank *r, int cur) {
 }
 
 void print_bs_rank(bs_rank *r, int cur) {
-  printf("A C G T\n");
-  for (int i = 0; i < cur; i++) {
+  printf("index    A    C    G    T\n");
+  int index = cur / BLOCK_SIZE;
+  for (int i = 0; i < index; i++) {
+    printf("%5d", i);
     for (int j = 0; j < 4; j++) {
-      printf("%d ", r->match[j][i]);
+      printf("%5d", r->match[j][i]);
     }
     printf("\n");
   }
+  printf("\nFinal count: %d %d %d %d\n\n", r->count[0], r->count[1], r->count[2], r->count[3]);
 }
