@@ -1,6 +1,7 @@
 #include "bwt_helper.h"
 
 void search(FILE *in, char *search_term, c_table *ct, bs_rank *r);
+int getNumMatch(FILE *in, bs_rank *r, int c, int cur);
 
 int main(int argc, char **argv) {
   FILE *in = fopen(argv[1], "r");
@@ -44,8 +45,10 @@ void search(FILE *in, char *search_term, c_table *ct, bs_rank *r) {
   while ((first <= last) && (i >= 1)) {
     c = search_term[i-1];
     // bs_rank is to check "which" same character is that.
-    first = ct->count[to_index(c)] + r->match[to_index(c)][first-1];
-    last = ct->count[to_index(c)] + r->match[to_index(c)][last] - 1;
+    first = ct->count[to_index(c)] + getNumMatch(in, r, c, first-1);
+    last = ct->count[to_index(c)] + getNumMatch(in, r, c, last) - 1;
+    //first = ct->count[to_index(c)] + r->match[to_index(c)][first-1];
+    //last = ct->count[to_index(c)] + r->match[to_index(c)][last] - 1;
     i--;
   }
   if (last < first) {
@@ -53,4 +56,16 @@ void search(FILE *in, char *search_term, c_table *ct, bs_rank *r) {
   } else {
     printf("%d\n", last - first + 1);
   }
+}
+
+int getNumMatch(FILE *in, bs_rank *r, int c, int cur) {
+  int block_id = cur / BLOCK_SIZE;
+  int offset = cur % BLOCK_SIZE;
+
+  int result = r->match[to_index(c)][block_id];
+  for (int i = cur-offset+1; i <= cur; i++) {
+    fseek(in, i, SEEK_SET);
+    if (fgetc(in) == c) result++;
+  }
+  return result;
 }
