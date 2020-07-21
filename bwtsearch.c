@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
     cur++;
   }
 
-  print_rank(r, cur);
+  //print_rank(r, cur);
 
   while (scanf("%s", search_term) != EOF) {
     search(in, search_term, ct, r);

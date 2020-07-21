@@ -43,7 +43,6 @@ void update_rank(rank *r, int ch, int cur) {
 void update_bs_rank(rank *r, int ch, int cur) {
   r->count[to_index(ch)]++;
   if (cur % BLOCK_SIZE == 0) {
-    printf("%d\n", cur);
     int index = cur / BLOCK_SIZE;
     for (int i = 0; i < 4; i++) {
       r->match[i][index] = r->count[i];

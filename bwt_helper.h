@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX_SIZE 247920
-#define BLOCK_SIZE 5
+#define BLOCK_SIZE 100
+#define MAX_SIZE (104857600/BLOCK_SIZE)
 
 typedef struct c_table {
   int count[4];
