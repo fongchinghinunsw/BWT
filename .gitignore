@@ -2,5 +2,5 @@
 *.txt
 bwtdecode
 bwtsearch
-my_output/
+./my_output/*
 memory.*
