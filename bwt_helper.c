@@ -1,13 +1,13 @@
 #include "bwt_helper.h"
 
 c_table *init_c_table() {
-  c_table *new = calloc(1, sizeof(*new));
+  c_table *new = malloc(sizeof(*new));
   new->count[0] = new->count[1] = new->count[2] = new->count[3] = 1;
   return new;
 }
 
 rank *init_rank() {
-  rank *new = calloc(1, sizeof(*new));
+  rank *new = malloc(sizeof(*new));
   return new;
 }
 
