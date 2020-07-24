@@ -1,6 +1,6 @@
 #include "bwt_helper.h"
 
-int getNumMatch(FILE *in, rank *r, int c, int cur);
+int getNumMatch(FILE *in, rank *r, int *c, int cur);
 
 int main(int argc, char **argv) {
   FILE *in = fopen(argv[1], "r");
@@ -11,7 +11,7 @@ int main(int argc, char **argv) {
   // ===== preprocessing started ===== //
   c_table *ct = init_c_table();
   rank *r = init_rank();
-  int c;
+  int *c = malloc(sizeof(int));
   int cur = 0;
   int next_pos;
 
@@ -29,17 +29,16 @@ int main(int argc, char **argv) {
   }
   // ===== preprocessing done ===== //
   
-  // used to store the character temporary in block.
   int block_index = BLOCK_SIZE - 1;
   next_pos = 0;
+
   // i = cur - 1 to avoid seeking \n
   for (int i = cur-2; i >= 0; i--) {
 
-    fseek(in, next_pos, SEEK_SET);
-    int c = fgetc(in);
-    next_pos = ct->count[to_index(c)] + getNumMatch(in, r, c, next_pos);
+    int count = getNumMatch(in, r, c, next_pos);
+    next_pos = ct->count[to_index(*c)] + count;
 
-    block[block_index] = c;
+    block[block_index] = *c;
     block_index--;
     if (block_index < 0) {
       fseek(out, i, SEEK_SET);
@@ -61,16 +60,42 @@ int main(int argc, char **argv) {
   return 0;
 }
 
-int getNumMatch(FILE *in, rank *r, int c, int cur) {
+int getNumMatch(FILE *in, rank *r, int *c, int cur) {
   int block_id = cur / BLOCK_SIZE;
   int offset = cur % BLOCK_SIZE;
 
-  int result = r->match[to_index(c)][block_id];
-  char block[offset];
-  fseek(in, cur-offset, SEEK_SET);
-  fread(block, 1, offset, in);
-  for (int i = 0; i < offset; i++) {
-    if (block[i] == c) result++;
-  }
+
+  int ch;
+  int result;
+//  if (offset < BLOCK_SIZE - offset) {
+    char block[offset+1];
+    fseek(in, cur-offset, SEEK_SET);
+    fread(block, 1, offset+1, in);
+
+    *c = block[offset];
+    ch = *c;
+
+    result = r->match[to_index(ch)][block_id];
+
+    for (int i = 0; i < offset; i++) {
+      if (block[i] == ch) result++;
+    }
+/*
+  } else {
+    char block[BLOCK_SIZE-offset+1];
+    fseek(in, cur, SEEK_SET);
+    fread(block, BLOCK_SIZE-offset+1, 1, in);
+
+    *c = block[BLOCK_SIZE-offset];
+    ch = *c;
+
+    result = r->match[to_index(ch)][block_id+1];
+
+
+    for (int i = 0; i < BLOCK_SIZE - offset; i++) {
+      if (block[i] == ch) result--;
+    }
+  } 
+*/
   return result;
 }
