@@ -8,6 +8,7 @@ c_table *init_c_table() {
 
 rank *init_rank() {
   rank *new = malloc(sizeof(*new));
+  new->numBlock = 0;
   return new;
 }
 
@@ -29,12 +30,16 @@ void update_c_table(c_table *ct, int ch) {
 
 void update_rank(rank *r, int ch, int cur) {
   if (cur % BLOCK_SIZE == 0) {
+    r->numBlock++;
     int index = cur / BLOCK_SIZE;
     for (int i = 0; i < 4; i++) {
       r->match[i][index] = r->count[i];
     }
   }
-  r->count[to_index(ch)]++;
+
+  if (ch != '\n') {
+    r->count[to_index(ch)]++;
+  }
 }
 
 /*

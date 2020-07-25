@@ -8,7 +8,7 @@ int main(int argc, char **argv) {
 
   char block[BLOCK_SIZE];
 
-  // ===== preprocessing started ===== //
+  // ===== preprocessing started ===== // takes ~0.9s for 15MB
   c_table *ct = init_c_table();
   rank *r = init_rank();
   int *c = malloc(sizeof(int));
@@ -19,12 +19,18 @@ int main(int argc, char **argv) {
   while ((numRead = fread(block, 1, BLOCK_SIZE, in)) != 0) {
     for (int i = 0; i < numRead; i++) {
       if (block[i] == '\n') {
+        update_rank(r, block[i], cur);
 	cur++;
 	continue;
       }
       update_c_table(ct, block[i]);
       update_rank(r, block[i], cur);
       cur++;
+    }
+    if (numRead != BLOCK_SIZE) {
+      for (int i = 0; i < 4; i++) {
+	r->match[i][r->numBlock] = r->count[i];
+      }
     }
   }
   // ===== preprocessing done ===== //
@@ -34,11 +40,14 @@ int main(int argc, char **argv) {
 
   // i = cur - 1 to avoid seeking \n
   for (int i = cur-2; i >= 0; i--) {
+    // ------------------------- 
+    // computation heavy part, other part of codes only nd ~0.28s for 15MB, most of them usr time.
 
     int count = getNumMatch(in, r, c, next_pos);
     next_pos = ct->count[to_index(*c)] + count;
 
-    block[block_index] = *c;
+    block[block_index] = *c; // this line costs ~0.02s for 15MB
+    // -------------------------
     block_index--;
     if (block_index < 0) {
       fseek(out, i, SEEK_SET);
@@ -64,13 +73,15 @@ int getNumMatch(FILE *in, rank *r, int *c, int cur) {
   int block_id = cur / BLOCK_SIZE;
   int offset = cur % BLOCK_SIZE;
 
+  char *block = malloc(BLOCK_SIZE * sizeof(char));
 
   int ch;
   int result;
-//  if (offset < BLOCK_SIZE - offset) {
-    char block[offset+1];
+// ---------------------- this is the computational heavy part,
+// other parts in this func costs almost nothing.
+  if (offset < BLOCK_SIZE - offset || block_id == r->numBlock - 1) {
     fseek(in, cur-offset, SEEK_SET);
-    fread(block, 1, offset+1, in);
+    fread(block, offset+1, 1, in);
 
     *c = block[offset];
     ch = *c;
@@ -80,13 +91,12 @@ int getNumMatch(FILE *in, rank *r, int *c, int cur) {
     for (int i = 0; i < offset; i++) {
       if (block[i] == ch) result++;
     }
-/*
-  } else {
-    char block[BLOCK_SIZE-offset+1];
-    fseek(in, cur, SEEK_SET);
-    fread(block, BLOCK_SIZE-offset+1, 1, in);
 
-    *c = block[BLOCK_SIZE-offset];
+  } else {
+    fseek(in, cur, SEEK_SET);
+    fread(block, BLOCK_SIZE-offset, 1, in);
+
+    *c = block[0];
     ch = *c;
 
     result = r->match[to_index(ch)][block_id+1];
@@ -95,7 +105,7 @@ int getNumMatch(FILE *in, rank *r, int *c, int cur) {
     for (int i = 0; i < BLOCK_SIZE - offset; i++) {
       if (block[i] == ch) result--;
     }
-  } 
-*/
+  }
+  // -----------------------------
   return result;
 }
