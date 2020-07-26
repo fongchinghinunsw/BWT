@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define BLOCK_SIZE 150
+#define BLOCK_SIZE 700
 #define MAX_SIZE (104857600/BLOCK_SIZE)+2
 
 typedef struct c_table {

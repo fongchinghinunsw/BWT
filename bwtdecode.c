@@ -1,12 +1,16 @@
 #include "bwt_helper.h"
 
-int getNumMatch(FILE *in, rank *r, int *c, int cur);
+#define READ_SIZE 2000
+
+int getNumMatch(FILE *in, rank *r, char *block, int *c, int cur);
 
 int main(int argc, char **argv) {
   FILE *in = fopen(argv[1], "r");
   FILE *out = fopen(argv[2], "w");
 
   char block[BLOCK_SIZE];
+
+  char *block_f = malloc(BLOCK_SIZE);
 
   // ===== preprocessing started ===== // takes ~0.9s for 15MB
   c_table *ct = init_c_table();
@@ -27,11 +31,6 @@ int main(int argc, char **argv) {
       update_rank(r, block[i], cur);
       cur++;
     }
-    if (numRead != BLOCK_SIZE) {
-      for (int i = 0; i < 4; i++) {
-	r->match[i][r->numBlock] = r->count[i];
-      }
-    }
   }
   // ===== preprocessing done ===== //
   
@@ -43,7 +42,7 @@ int main(int argc, char **argv) {
     // ------------------------- 
     // computation heavy part, other part of codes only nd ~0.28s for 15MB, most of them usr time.
 
-    int count = getNumMatch(in, r, c, next_pos);
+    int count = getNumMatch(in, r, block_f, c, next_pos);
     next_pos = ct->count[to_index(*c)] + count;
 
     block[block_index] = *c; // this line costs ~0.02s for 15MB
@@ -69,11 +68,9 @@ int main(int argc, char **argv) {
   return 0;
 }
 
-int getNumMatch(FILE *in, rank *r, int *c, int cur) {
+int getNumMatch(FILE *in, rank *r, char *block, int *c, int cur) {
   int block_id = cur / BLOCK_SIZE;
   int offset = cur % BLOCK_SIZE;
-
-  char *block = malloc(BLOCK_SIZE * sizeof(char));
 
   int ch;
   int result;
